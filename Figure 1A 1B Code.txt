@@ -1,0 +1,15 @@
+getwd()
+df<-read.csv("7305.csv",header = T,
+             stringsAsFactors = F)
+head(df)
+dim(df)
+df$group<-ifelse(df$logFC>=1&df$P.Value<0.05,"Up",
+                 ifelse(df$logFC<=-1&df$P.Value<0.05,"Down","NOT sig"))
+head(df)
+table(df$group)
+library(ggplot2)
+ggplot(df,aes(x=logFC,y=-log10(P.Value)))+
+  geom_point(aes(color=group))+
+  scale_color_manual(values = c("dodgerblue","gray","firebrick"))+
+  theme_bw()+
+  labs(x="log(Fold Change)")
