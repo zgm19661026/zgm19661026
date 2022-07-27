@@ -1,0 +1,30 @@
+my_data <- read.csv(file.choose())
+head(my_data,6)
+library(dplyr)  
+my_data = my_data %>%
+  tibble::column_to_rownames('X')
+res<-cor(my_data)
+round(res,2)
+library(Hmisc)
+res2<-rcorr(as.matrix(my_data))
+res2
+res2$r
+res2$P
+flattenCorrMatrix <- function(cormat, pmat) {
+  ut <- upper.tri(cormat) 
+  data.frame( row = rownames(cormat)[row(cormat)[ut]],
+              column = rownames(cormat)[col(cormat)[ut]], cor =(cormat)[ut], p = pmat[ut] )
+}
+res3 <- rcorr(as.matrix(my_data))
+flattenCorrMatrix(res3$r, res3$P)
+
+cor_r_p <- flattenCorrMatrix(res3$r, res3$P)
+r <- res3$r
+p <- res3$P
+save(r, p, cor_r_p, file = "correlation.Rdata")
+write.table(r, "correlation_r.txt", sep="\t", quote=F, row.names = T)
+write.table(p, "correlation_p.txt", sep="\t", quote=F, row.names = T)
+write.table(cor_r_p, "correlation_r_p.txt", sep="\t", quote=F, row.names = T)
+library(corrplot)
+corrplot(res, type = "upper", order = "hclust", tl.col = "black", tl.srt = 45)
+corrplot(res2$r, type="upper", order="hclust", tl.col = "black", tl.srt = 45,p.mat = res2$P, sig.level = 0.001, insig = "blank")

@@ -1,0 +1,24 @@
+library(clusterProfiler)
+library(AnnotationHub)
+library(org.Hs.eg.db)
+library(ggplot2)
+library(DOSE)
+go_ythdf2 <- read.table("gene.txt",sep=" ")
+go_ythdf2 <- t(go_ythdf2)
+keytypes(org.Hs.eg.db)
+go_ythdf2_id_trance <- bitr(go_ythdf2,fromType = "SYMBOL",toType = "ENSEMBL",OrgDb = "org.Hs.eg.db",drop = T)
+write.table(go_ythdf2_id_trance,"go_ythdf2_id_trance.txt")
+f <- read.table("genelist.txt")   
+f <- f[c(1)]
+EG2Ensembl=toTable(org.Hs.egENSEMBL)
+f=f$V1  
+geneLists=data.frame(ensembl_id=f)
+results=merge(geneLists,EG2Ensembl,by='ensembl_id',all.x=T)
+id=na.omit(results$gene_id)
+####GO富集
+All <- enrichGO(OrgDb="org.Hs.eg.db", gene = id, ont = "ALL",  readable= TRUE)
+library(DOSE)
+dotplot(All, split="ONTOLOGY")+ facet_grid(ONTOLOGY~.,scale="free")
+####KEGG富集
+KEGG <- enrichKEGG(gene= id, organism  = 'hsa', pvalueCutoff = 0.05)
+dotplot(KEGG, font.size=8, showCategory=10, title="Enrichment KEGG Top10") + scale_size(rang=c(5.20))
