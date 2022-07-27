@@ -1,0 +1,26 @@
+library(pROC)
+rt <- read.table("exp.txt", header=T, check.names=F, row.names=1)
+head(rt)
+str(rt)
+ROC1 <- roc(rt$Type, rt$C3,
+            levels = c("endometriosis", "control"))
+ROC1
+#绘制ROC曲线
+plot(ROC1,col = 'red',legacy.axes = TRUE,xlab = "1-Specificity")
+##拟合平滑的ROC曲线
+plot(smooth(ROC1, method="density"),add = FALSE,col = 'red',legacy.axes = TRUE,
+     xlab = "1-Specificity")
+##添加可信区间
+plot(ROC1)
+ROC3 <- ci.sp(ROC1,sensitivities = seq(0, 1, 0.01),boot.n = 2000)   
+plot(ROC3,add = FALSE,type = "shape", col = 'red')
+#添加AUC，阈值等参数
+plot(ROC1,add = FALSE,col = 'red',legacy.axes = TRUE,xlab = "1-Specificity",
+     print.auc =TRUE,print.auc.x = 0.5,print.auc.y = 0.5,print.thres = TRUE)
+#终极版
+plot(ROC1,add = FALSE,col = "red",legacy.axes = TRUE,xlab = "1-Specificity",cex.lab=2,
+     main = "C3",cex.main=2,print.auc =TRUE,print.auc.cex=2,
+     print.thres.cex=2,auc.polygon = TRUE,auc.polygon.col = "#fff7f7",
+     grid = c(0.5, 0.2),grid.col = c("black", "black"),
+     print.thres = TRUE)
+legend(0.5,0.2, bty="n", lty=1, lwd=2,legend = "C3",cex=2,col = "red")
