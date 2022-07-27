@@ -1,0 +1,13 @@
+library(pROC)
+rt <- read.table("exp.txt", header=T, check.names=F, row.names=1)
+head(rt)
+str(rt)
+ROC1 <- roc(rt$Type, rt$gene name,
+            levels = c("disease", "control"))
+ROC1
+plot(ROC1,add = FALSE,col = "red",legacy.axes = TRUE,xlab = "1-Specificity",cex.lab=2,
+     main = "gene name",cex.main=2,print.auc =TRUE,print.auc.cex=2,
+     print.thres.cex=2,auc.polygon = TRUE,auc.polygon.col = "#fff7f7",
+     grid = c(0.5, 0.2),grid.col = c("black", "black"),
+     print.thres = TRUE)
+legend(0.5,0.2, bty="n", lty=1, lwd=2,legend = "gene name",cex=2,col = "red")

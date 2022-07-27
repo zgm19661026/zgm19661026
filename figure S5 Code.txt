@@ -1,0 +1,12 @@
+df1<-read.csv("heat.csv",header = T,
+              row.names = 1,stringsAsFactors = F)
+df2<-read.csv("group.csv",header = T,
+              row.names = 1,stringsAsFactors = F)
+head(df1)
+head(df2)
+dim(df1)
+library(pheatmap)
+pheatmap(df1,scale = "row",cluster_col = FALSE,fontsize_col=6,fontsize_row=6,
+         main = "GSE7307", fontsize = 12,
+         color = colorRampPalette(c( "navy", "white", "firebrick3"))(50),
+         annotation_col = df2)
